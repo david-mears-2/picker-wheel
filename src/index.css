@@ -395,10 +395,31 @@ body {
 .app:fullscreen .result-slot,
 .app--fullscreen .result-slot {
   position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: 0;
+  pointer-events: none;
+}
+
+.app:fullscreen .result-display,
+.app--fullscreen .result-display {
+  pointer-events: auto;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 24px;
+  padding: 24px 48px;
+  backdrop-filter: blur(6px);
+  animation: result-appear 0.4s ease-out;
+}
+
+.app:fullscreen .result-display-label,
+.app--fullscreen .result-display-label {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  padding: 20px 56px;
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
 }
 
 .app:fullscreen .app-title,
@@ -418,12 +439,6 @@ body {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
   color: #fff;
-}
-
-.app:fullscreen .result-display-label,
-.app--fullscreen .result-display-label {
-  font-size: 2rem;
-  padding: 16px 48px;
 }
 
 /* ---- Settings ---- */
