@@ -401,6 +401,7 @@ body {
   justify-content: center;
   min-height: 0;
   pointer-events: none;
+  z-index: 30;
 }
 
 .app:fullscreen .result-display,
