@@ -2,19 +2,13 @@ export interface WheelOption {
   id: string;
   label: string;
   color: string;
-  weight: number; // 1–10
-}
-
-export interface SpinResult {
-  optionId: string;
-  label: string;
-  timestamp: number;
+  weight: number; // 0.1–10, supports decimals
 }
 
 export interface WheelSettings {
   title: string;
+  subtitle: string;
   options: WheelOption[];
-  results: SpinResult[];
   bgColor: string;
   colorPatternIndex: number;
 }

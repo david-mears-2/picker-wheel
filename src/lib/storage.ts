@@ -12,7 +12,9 @@ export function loadSettings(): WheelSettings | null {
       typeof parsed.title === "string" &&
       Array.isArray(parsed.options)
     ) {
-      return parsed as WheelSettings;
+      // Strip legacy fields (e.g. results) during migration
+      const { results: _, ...rest } = parsed;
+      return rest as WheelSettings;
     }
     return null;
   } catch {

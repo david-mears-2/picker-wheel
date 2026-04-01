@@ -2,18 +2,22 @@ import { COLOR_PATTERNS } from "../lib/colors";
 
 interface SettingsPanelProps {
   title: string;
+  subtitle: string;
   bgColor: string;
   colorPatternIndex: number;
   onTitleChange: (title: string) => void;
+  onSubtitleChange: (subtitle: string) => void;
   onBgColorChange: (color: string) => void;
   onColorPatternChange: (index: number) => void;
 }
 
 export function SettingsPanel({
   title,
+  subtitle,
   bgColor,
   colorPatternIndex,
   onTitleChange,
+  onSubtitleChange,
   onBgColorChange,
   onColorPatternChange,
 }: SettingsPanelProps) {
@@ -28,6 +32,18 @@ export function SettingsPanel({
           type="text"
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
+          className="setting-input"
+        />
+      </div>
+
+      <div className="setting-item">
+        <label htmlFor="wheel-subtitle">Subtitle</label>
+        <input
+          id="wheel-subtitle"
+          type="text"
+          value={subtitle}
+          onChange={(e) => onSubtitleChange(e.target.value)}
+          placeholder="Optional subtitle…"
           className="setting-input"
         />
       </div>

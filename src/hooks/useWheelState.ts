@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import type { WheelOption, SpinResult, WheelSettings } from "../types";
+import type { WheelOption, WheelSettings } from "../types";
 import { loadSettings, saveSettings } from "../lib/storage";
 import { getOptionColor } from "../lib/colors";
 
@@ -25,18 +25,21 @@ function applyPatternColors(
 function getInitialState(): WheelSettings {
   const saved = loadSettings();
   if (saved) {
-    // Re-apply color pattern if colors are empty
     const hasColors = saved.options.every((o) => o.color);
     if (!hasColors) {
       saved.options = applyPatternColors(saved.options, saved.colorPatternIndex);
+    }
+    // Migrate: ensure subtitle exists
+    if (typeof saved.subtitle !== "string") {
+      saved.subtitle = "";
     }
     return saved;
   }
   const patternIndex = 0;
   return {
     title: "Picker Wheel",
+    subtitle: "",
     options: applyPatternColors(DEFAULT_OPTIONS(), patternIndex),
-    results: [],
     bgColor: "#1a1a2e",
     colorPatternIndex: patternIndex,
   };
@@ -53,6 +56,10 @@ export function useWheelState() {
 
   const setTitle = useCallback((title: string) => {
     setState((s) => ({ ...s, title }));
+  }, []);
+
+  const setSubtitle = useCallback((subtitle: string) => {
+    setState((s) => ({ ...s, subtitle }));
   }, []);
 
   const setBgColor = useCallback((bgColor: string) => {
@@ -118,20 +125,10 @@ export function useWheelState() {
     });
   }, []);
 
-  const addResult = useCallback((result: SpinResult) => {
-    setState((s) => ({
-      ...s,
-      results: [result, ...s.results],
-    }));
-  }, []);
-
-  const clearResults = useCallback(() => {
-    setState((s) => ({ ...s, results: [] }));
-  }, []);
-
   return {
     state,
     setTitle,
+    setSubtitle,
     setBgColor,
     setColorPattern,
     addOption,
@@ -139,7 +136,5 @@ export function useWheelState() {
     updateOption,
     shuffleOptions,
     sortOptions,
-    addResult,
-    clearResults,
   };
 }

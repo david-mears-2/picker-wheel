@@ -44,7 +44,8 @@ function drawWheel(
     ctx.shadowColor = "rgba(0,0,0,0.5)";
     ctx.shadowBlur = 2;
 
-    const fontSize = Math.max(10, Math.min(16, radius / segments.length * 0.8));
+    const maxFontSize = Math.max(16, radius * 0.05);
+    const fontSize = Math.max(10, Math.min(maxFontSize, radius / segments.length * 0.8));
     ctx.font = `bold ${fontSize}px system-ui, sans-serif`;
 
     const maxWidth = radius * 0.65;

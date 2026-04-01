@@ -23,7 +23,7 @@ export function useSpinSound() {
       osc.connect(gain);
       gain.connect(ctx.destination);
 
-      osc.frequency.value = 800 + Math.random() * 400;
+      osc.frequency.value = 1000;
       osc.type = "sine";
 
       gain.gain.setValueAtTime(0.08, ctx.currentTime);

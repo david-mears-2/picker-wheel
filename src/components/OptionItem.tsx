@@ -20,6 +20,8 @@ export function OptionItem({ option, onUpdate, onRemove, canRemove }: OptionItem
     setIsEditing(false);
   };
 
+  const clampWeight = (v: number) => Math.round(Math.max(0.1, Math.min(10, v)) * 10) / 10;
+
   return (
     <li className="option-item" style={{ borderLeftColor: option.color }}>
       <input
@@ -61,18 +63,29 @@ export function OptionItem({ option, onUpdate, onRemove, canRemove }: OptionItem
 
       <div className="option-weight">
         <button
-          onClick={() => onUpdate(option.id, { weight: Math.max(1, option.weight - 1) })}
-          disabled={option.weight <= 1}
+          onClick={() => onUpdate(option.id, { weight: clampWeight(option.weight - 0.1) })}
+          disabled={option.weight <= 0.1}
           aria-label={`Decrease weight for ${option.label}`}
           className="weight-btn"
         >
           −
         </button>
-        <span className="weight-value" title={`Weight: ${option.weight}/10`}>
-          {option.weight}
-        </span>
+        <input
+          type="number"
+          className="weight-input"
+          value={option.weight}
+          min={0.1}
+          max={10}
+          step={0.1}
+          onChange={(e) => {
+            const v = parseFloat(e.target.value);
+            if (!isNaN(v)) onUpdate(option.id, { weight: clampWeight(v) });
+          }}
+          aria-label={`Weight for ${option.label}`}
+          title={`Weight: ${option.weight}`}
+        />
         <button
-          onClick={() => onUpdate(option.id, { weight: Math.min(10, option.weight + 1) })}
+          onClick={() => onUpdate(option.id, { weight: clampWeight(option.weight + 0.1) })}
           disabled={option.weight >= 10}
           aria-label={`Increase weight for ${option.label}`}
           className="weight-btn"
