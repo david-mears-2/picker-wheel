@@ -332,6 +332,12 @@ body {
   margin-top: 10px;
 }
 
+/* ---- Result slot ---- */
+
+.result-slot {
+  min-height: 52px;
+}
+
 /* ---- Inline result display ---- */
 
 .result-display {
@@ -383,6 +389,16 @@ body {
   justify-content: center;
   box-shadow: none;
   background: transparent;
+  position: relative;
+}
+
+.app:fullscreen .result-slot,
+.app--fullscreen .result-slot {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  min-height: 0;
 }
 
 .app:fullscreen .app-title,

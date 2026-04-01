@@ -131,13 +131,15 @@ export default function App() {
               size={wheelSize}
             />
           </div>
-          {winner && !isSpinning && (
-            <ResultDisplay
-              label={winner.label}
-              color={winner.color}
-              onDismiss={() => setWinner(null)}
-            />
-          )}
+          <div className="result-slot">
+            {winner && !isSpinning && (
+              <ResultDisplay
+                label={winner.label}
+                color={winner.color}
+                onDismiss={() => setWinner(null)}
+              />
+            )}
+          </div>
         </div>
 
         {!isFullscreen && (
