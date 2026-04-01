@@ -21,17 +21,19 @@ export function SpinButton({ onClick, disabled, size }: SpinButtonProps) {
         width: btnSize,
         height: btnSize,
         borderRadius: "50%",
-        border: "3px solid rgba(255,255,255,0.3)",
+        border: "3px solid rgba(255,255,255,0.7)",
         background: disabled
-          ? "linear-gradient(135deg, #666, #444)"
-          : "linear-gradient(135deg, #e63946, #c1121f)",
+          ? "#999"
+          : "#ff4d6d",
         color: "#fff",
-        fontSize: btnSize * 0.22,
-        fontWeight: 800,
+        fontSize: btnSize * 0.2,
+        fontWeight: 700,
         cursor: disabled ? "not-allowed" : "pointer",
         zIndex: 20,
-        letterSpacing: "0.05em",
-        boxShadow: "0 4px 15px rgba(0,0,0,0.3)",
+        textTransform: "uppercase" as const,
+        boxShadow: disabled
+          ? "none"
+          : "0 4px 10px rgba(0,0,0,0.2), inset 0 2px 3px rgba(255,255,255,0.4)",
         transition: "transform 0.1s",
       }}
       onMouseDown={(e) => {

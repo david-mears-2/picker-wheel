@@ -40,7 +40,7 @@ function getInitialState(): WheelSettings {
     title: "Picker Wheel",
     subtitle: "",
     options: applyPatternColors(DEFAULT_OPTIONS(), patternIndex),
-    bgColor: "#1a1a2e",
+    bgColor: "#f4f7f6",
     colorPatternIndex: patternIndex,
   };
 }

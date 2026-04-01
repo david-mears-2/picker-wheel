@@ -49,18 +49,18 @@ export function pickWinner(segments: Segment[]): {
 
 /**
  * Given the current wheel rotation (radians, increasing clockwise),
- * determine which segment the top-center pointer is pointing at.
- * The pointer is at angle 3π/2 (top of circle) in canvas coordinates.
+ * determine which segment the right-side pointer is pointing at.
+ * The pointer is at angle 0 (3 o'clock) in canvas coordinates.
  */
 export function getSegmentAtPointer(
   segments: Segment[],
   rotation: number
 ): number {
-  // Normalize: the pointer is at the top (3π/2 in canvas coords = -π/2).
-  // The segment under the pointer is at angle (2π - rotation mod 2π) mapped
-  // relative to segment start angles.
   const twoPi = Math.PI * 2;
-  const pointerAngle = ((twoPi - (rotation % twoPi)) + twoPi) % twoPi;
+  // The pointer is at 0 (right / 3 o'clock). Segments are drawn offset by -π/2
+  // (so segment 0 starts at top). The effective pointer angle into segment space
+  // is (π/2 - rotation) normalised to [0, 2π).
+  const pointerAngle = (((Math.PI / 2) - (rotation % twoPi)) % twoPi + twoPi) % twoPi;
 
   for (let i = 0; i < segments.length; i++) {
     const s = segments[i];

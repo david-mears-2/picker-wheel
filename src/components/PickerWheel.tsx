@@ -99,22 +99,22 @@ export function PickerWheel({ options, rotation, size = 500 }: PickerWheelProps)
 
   return (
     <div className="wheel-container" style={{ width: size, height: size, position: "relative" }}>
-      {/* Pointer */}
+      {/* Pointer — right-side triangle matching reference site */}
       <div
         className="wheel-pointer"
         aria-hidden="true"
         style={{
           position: "absolute",
-          top: -8,
-          left: "50%",
-          transform: "translateX(-50%)",
+          top: "50%",
+          right: -18,
+          transform: "translateY(-50%)",
           width: 0,
           height: 0,
-          borderLeft: "14px solid transparent",
-          borderRight: "14px solid transparent",
-          borderTop: "24px solid #fff",
+          borderTop: "15px solid transparent",
+          borderBottom: "15px solid transparent",
+          borderRight: "28px solid #333",
           zIndex: 10,
-          filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.4))",
+          filter: "drop-shadow(-2px 0 3px rgba(0,0,0,0.3))",
         }}
       />
       <canvas

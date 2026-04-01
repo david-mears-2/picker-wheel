@@ -23,7 +23,7 @@ export function OptionItem({ option, onUpdate, onRemove, canRemove }: OptionItem
   const clampWeight = (v: number) => Math.round(Math.max(0.1, Math.min(10, v)) * 10) / 10;
 
   return (
-    <li className="option-item" style={{ borderLeftColor: option.color }}>
+    <li className="option-item">
       <input
         type="color"
         value={option.color}

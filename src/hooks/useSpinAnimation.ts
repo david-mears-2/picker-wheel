@@ -29,17 +29,16 @@ export function useSpinAnimation(
     const segments = buildSegments(options);
     const { angle: winAngle, winnerIndex } = pickWinner(segments);
 
-    // The pointer is at top (angle 0 in our draw).
-    // We want the winning segment's midpoint to end up under the pointer.
-    // The wheel is drawn with segment 0 starting at angle 0 (right, 3 o'clock).
-    // The pointer is at -π/2 (top). So we need to rotate the wheel so that
-    // the winning angle lines up at top.
-    // target rotation: enough full spins + offset so winAngle is at top
+    // The pointer is on the right (0° in canvas = 3 o'clock).
+    // Segments are drawn offset by -π/2 (segment 0 starts at top).
+    // We need the winning segment's midpoint to end up at the pointer.
+    // pointer angle in segment space = π/2 - rotation
+    // So rotation = π/2 - winAngle  →  target adds enough full spins
     const fullSpins = 5 + Math.floor(Math.random() * 5); // 5–9 full rotations
     const targetRotation =
       rotationRef.current +
       fullSpins * Math.PI * 2 +
-      (Math.PI * 2 - winAngle);
+      (Math.PI / 2 - winAngle);
 
     const startRotation = rotationRef.current;
     const totalDelta = targetRotation - startRotation;
