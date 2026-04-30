@@ -84,22 +84,30 @@ body {
 }
 
 .wheel-header {
-  display: flex;
+  --wheel-header-action-size: 36px;
+  display: grid;
+  grid-template-columns: var(--wheel-header-action-size) minmax(0, 1fr) var(--wheel-header-action-size);
   align-items: flex-start;
-  justify-content: center;
   gap: 12px;
   width: 100%;
+}
+
+.wheel-header > :first-child {
+  grid-column: 2;
+  min-width: 0;
   text-align: center;
 }
 
 .fullscreen-btn {
+  grid-column: 3;
+  justify-self: end;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 50%;
   color: var(--text-muted);
   font-size: 1.2rem;
-  width: 36px;
-  height: 36px;
+  width: var(--wheel-header-action-size);
+  height: var(--wheel-header-action-size);
   cursor: pointer;
   display: flex;
   align-items: center;
