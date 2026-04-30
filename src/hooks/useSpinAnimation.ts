@@ -55,7 +55,7 @@ export function useSpinAnimation(
 
     // The pointer is on the right (0° in canvas = 3 o'clock).
     // Segments are drawn offset by -π/2 (segment 0 starts at top).
-    // We need the winning segment's midpoint to end up at the pointer.
+    // We need a landing angle inside the winning segment to end up at the pointer.
     // pointer angle in segment space = π/2 - rotation
     // So rotation = π/2 - winAngle  →  target adds enough full spins
     const fullSpins = 5 + Math.floor(Math.random() * 5); // 5–9 full rotations

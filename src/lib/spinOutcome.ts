@@ -12,10 +12,29 @@ export interface SpinOutcomeResult {
   error: string | null;
 }
 
+const SEGMENT_EDGE_PADDING_RATIO = 0.18;
+
+function getBufferedAngleWithinSegment(
+  segment: Segment,
+  random: () => number
+): number {
+  const arc = segment.endAngle - segment.startAngle;
+  const edgePadding = arc * SEGMENT_EDGE_PADDING_RATIO;
+  const minAngle = segment.startAngle + edgePadding;
+  const maxAngle = segment.endAngle - edgePadding;
+
+  if (maxAngle <= minAngle) {
+    return segment.midAngle;
+  }
+
+  return minAngle + random() * (maxAngle - minAngle);
+}
+
 export function resolveSpinOutcome(
   segments: Segment[],
   config: SpinOutcomeOverrideConfig,
-  randomWinnerPicker: (segments: Segment[]) => SpinOutcomeSelection = pickWinner
+  randomWinnerPicker: (segments: Segment[]) => SpinOutcomeSelection = pickWinner,
+  random: () => number = Math.random
 ): SpinOutcomeResult {
   if (!config.enabled) {
     return {
@@ -33,7 +52,7 @@ export function resolveSpinOutcome(
 
   return {
     selection: {
-      angle: segments[config.optionIndex].midAngle,
+      angle: getBufferedAngleWithinSegment(segments[config.optionIndex], random),
       winnerIndex: config.optionIndex,
     },
     error: null,
