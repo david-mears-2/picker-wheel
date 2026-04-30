@@ -4,6 +4,7 @@ import { SpinButton } from "./components/SpinButton";
 import { ResultDisplay } from "./components/ResultDisplay";
 import { OptionList } from "./components/OptionList";
 import { SettingsPanel } from "./components/SettingsPanel";
+import type { PointerImpact } from "./hooks/usePointerImpactAnimation";
 import { useWheelState } from "./hooks/useWheelState";
 import { useSpinAnimation } from "./hooks/useSpinAnimation";
 import { useSpinSound } from "./hooks/useSpinSound";
@@ -48,6 +49,10 @@ export default function App() {
 
   const [winner, setWinner] = useState<WheelOption | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [pointerImpact, setPointerImpact] = useState<PointerImpact>({
+    trigger: 0,
+    angularVelocity: 0,
+  });
   const appRef = useRef<HTMLDivElement>(null);
   const { tick } = useSpinSound();
 
@@ -58,8 +63,13 @@ export default function App() {
     []
   );
 
-  const handleSegmentChange = useCallback(() => {
+  const handleSegmentChange = useCallback((segmentIndex: number, angularVelocity: number) => {
+    void segmentIndex;
     tick();
+    setPointerImpact((current) => ({
+      trigger: current.trigger + 1,
+      angularVelocity,
+    }));
   }, [tick]);
 
   const { isSpinning, rotation, spin, error: spinError } = useSpinAnimation(
@@ -122,6 +132,7 @@ export default function App() {
           <div className="wheel-wrapper" style={{ width: wheelSize, height: wheelSize }}>
             <PickerWheel
               options={state.options}
+              pointerImpact={pointerImpact}
               rotation={rotation}
               size={wheelSize}
             />

@@ -14,7 +14,7 @@ interface SpinState {
 export function useSpinAnimation(
   options: WheelOption[],
   onFinished: (winner: WheelOption) => void,
-  onSegmentChange?: (segmentIndex: number) => void,
+  onSegmentChange?: (segmentIndex: number, angularVelocity: number) => void,
 ) {
   const [spinState, setSpinState] = useState<SpinState>({
     isSpinning: false,
@@ -26,6 +26,8 @@ export function useSpinAnimation(
   const animRef = useRef<number>(0);
   const rotationRef = useRef(0);
   const lastSegmentRef = useRef(0);
+  const previousFrameTimeRef = useRef(0);
+  const previousFrameRotationRef = useRef(0);
 
   const spin = useCallback(() => {
     if (options.length < 2) return;
@@ -69,6 +71,9 @@ export function useSpinAnimation(
     const totalDelta = targetRotation - startRotation;
     const duration = 4000 + Math.random() * 2000; // 4–6 seconds
     const startTime = performance.now();
+    lastSegmentRef.current = getSegmentAtPointer(segments, startRotation);
+    previousFrameTimeRef.current = startTime;
+    previousFrameRotationRef.current = startRotation;
 
     setSpinState((s) => ({ ...s, isSpinning: true, error: null }));
 
@@ -80,13 +85,18 @@ export function useSpinAnimation(
       const easedProgress = easeOutCubic(progress);
 
       const currentRotation = startRotation + totalDelta * easedProgress;
+      const elapsedSincePreviousFrame = Math.max(now - previousFrameTimeRef.current, 1);
+      const angularVelocity = Math.abs(currentRotation - previousFrameRotationRef.current)
+        / elapsedSincePreviousFrame;
       rotationRef.current = currentRotation;
+      previousFrameTimeRef.current = now;
+      previousFrameRotationRef.current = currentRotation;
 
       // Detect segment changes for tick sound
       const currentSeg = getSegmentAtPointer(segments, currentRotation);
       if (currentSeg !== lastSegmentRef.current) {
         lastSegmentRef.current = currentSeg;
-        onSegmentChange?.(currentSeg);
+        onSegmentChange?.(currentSeg, angularVelocity);
       }
 
       setSpinState({

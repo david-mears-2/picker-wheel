@@ -132,6 +132,27 @@ body {
   position: relative;
 }
 
+.wheel-pointer-anchor {
+  position: absolute;
+  top: 50%;
+  right: -18px;
+  width: 28px;
+  height: 30px;
+  z-index: 10;
+  transform: translate3d(0, -50%, 0) rotate(0deg);
+  transform-origin: calc(100% - 2px) 50%;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.wheel-pointer {
+  width: 28px;
+  height: 30px;
+  background: #333;
+  clip-path: polygon(100% 0, 0 50%, 100% 100%);
+  filter: drop-shadow(-2px 0 3px rgba(0, 0, 0, 0.3));
+}
+
 /* ---- Controls section ---- */
 
 .controls-section {

@@ -1,10 +1,12 @@
 import { useRef, useEffect, useCallback } from "react";
 import type { WheelOption } from "../types";
+import { usePointerImpactAnimation, type PointerImpact } from "../hooks/usePointerImpactAnimation";
 import { getReadableTextColor } from "../lib/colors";
 import { buildSegments, type Segment } from "../lib/wheelMath";
 
 interface PickerWheelProps {
   options: WheelOption[];
+  pointerImpact?: PointerImpact;
   rotation: number;
   size?: number;
 }
@@ -75,9 +77,10 @@ function drawWheel(
   ctx.restore();
 }
 
-export function PickerWheel({ options, rotation, size = 500 }: PickerWheelProps) {
+export function PickerWheel({ options, pointerImpact, rotation, size = 500 }: PickerWheelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const segmentsRef = useRef<Segment[]>([]);
+  const pointerRef = usePointerImpactAnimation(pointerImpact);
 
   const redraw = useCallback(() => {
     const canvas = canvasRef.current;
@@ -103,24 +106,13 @@ export function PickerWheel({ options, rotation, size = 500 }: PickerWheelProps)
 
   return (
     <div className="wheel-container" style={{ width: size, height: size, position: "relative" }}>
-      {/* Pointer — right-side triangle matching reference site */}
       <div
-        className="wheel-pointer"
+        className="wheel-pointer-anchor"
         aria-hidden="true"
-        style={{
-          position: "absolute",
-          top: "50%",
-          right: -18,
-          transform: "translateY(-50%)",
-          width: 0,
-          height: 0,
-          borderTop: "15px solid transparent",
-          borderBottom: "15px solid transparent",
-          borderRight: "28px solid #333",
-          zIndex: 10,
-          filter: "drop-shadow(-2px 0 3px rgba(0,0,0,0.3))",
-        }}
-      />
+        ref={pointerRef}
+      >
+        <div className="wheel-pointer" />
+      </div>
       <canvas
         ref={canvasRef}
         style={{
