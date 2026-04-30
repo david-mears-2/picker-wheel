@@ -43,8 +43,7 @@ export default function App() {
     addOption,
     removeOption,
     updateOption,
-    shuffleOptions,
-    sortOptions,
+    reorderOptions,
   } = useWheelState();
 
   const [winner, setWinner] = useState<WheelOption | null>(null);
@@ -164,8 +163,7 @@ export default function App() {
               onAdd={addOption}
               onRemove={removeOption}
               onUpdate={updateOption}
-              onShuffle={shuffleOptions}
-              onSort={sortOptions}
+              onReorder={reorderOptions}
             />
             <SettingsPanel
               title={state.title}

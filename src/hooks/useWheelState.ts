@@ -145,23 +145,24 @@ export function useWheelState() {
     []
   );
 
-  const shuffleOptions = useCallback(() => {
+  const reorderOptions = useCallback((draggedId: string, targetId: string) => {
     setState((s) => {
-      const shuffled = [...s.options];
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-      }
-      return { ...s, options: applyPatternColors(shuffled, s.colorPatternIndex) };
-    });
-  }, []);
+      const draggedIndex = s.options.findIndex((option) => option.id === draggedId);
+      const targetIndex = s.options.findIndex((option) => option.id === targetId);
 
-  const sortOptions = useCallback(() => {
-    setState((s) => {
-      const sorted = [...s.options].sort((a, b) =>
-        a.label.localeCompare(b.label)
-      );
-      return { ...s, options: applyPatternColors(sorted, s.colorPatternIndex) };
+      if (
+        draggedIndex === -1 ||
+        targetIndex === -1 ||
+        draggedIndex === targetIndex
+      ) {
+        return s;
+      }
+
+      const reordered = [...s.options];
+      const [draggedOption] = reordered.splice(draggedIndex, 1);
+      reordered.splice(targetIndex, 0, draggedOption);
+
+      return { ...s, options: reordered };
     });
   }, []);
 
@@ -174,7 +175,6 @@ export function useWheelState() {
     addOption,
     removeOption,
     updateOption,
-    shuffleOptions,
-    sortOptions,
+    reorderOptions,
   };
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { OptionList } from "./OptionList";
 import type { WheelOption } from "../types";
@@ -20,13 +20,26 @@ describe("OptionList", () => {
         onAdd={noop}
         onRemove={noop}
         onUpdate={noop}
-        onShuffle={noop}
-        onSort={noop}
+        onReorder={noop}
       />
     );
     expect(screen.getByText("Alpha")).toBeInTheDocument();
     expect(screen.getByText("Beta")).toBeInTheDocument();
     expect(screen.getByText("Gamma")).toBeInTheDocument();
+  });
+
+  it("shows a subtle drag-and-drop hint when reordering is available", () => {
+    render(
+      <OptionList
+        options={defaultOptions}
+        onAdd={noop}
+        onRemove={noop}
+        onUpdate={noop}
+        onReorder={noop}
+      />
+    );
+
+    expect(screen.getByText(/drag and drop to reorder/i)).toBeInTheDocument();
   });
 
   it("calls onAdd when typing and clicking Add", async () => {
@@ -38,8 +51,7 @@ describe("OptionList", () => {
         onAdd={onAdd}
         onRemove={noop}
         onUpdate={noop}
-        onShuffle={noop}
-        onSort={noop}
+        onReorder={noop}
       />
     );
 
@@ -58,8 +70,7 @@ describe("OptionList", () => {
         onAdd={onAdd}
         onRemove={noop}
         onUpdate={noop}
-        onShuffle={noop}
-        onSort={noop}
+        onReorder={noop}
       />
     );
 
@@ -77,8 +88,7 @@ describe("OptionList", () => {
         onAdd={onAdd}
         onRemove={noop}
         onUpdate={noop}
-        onShuffle={noop}
-        onSort={noop}
+        onReorder={noop}
       />
     );
 
@@ -86,38 +96,28 @@ describe("OptionList", () => {
     expect(onAdd).not.toHaveBeenCalled();
   });
 
-  it("calls onShuffle when Shuffle is clicked", async () => {
-    const user = userEvent.setup();
-    const onShuffle = vi.fn();
+  it("calls onReorder when an option is dropped onto another option", () => {
+    const onReorder = vi.fn();
     render(
       <OptionList
         options={defaultOptions}
         onAdd={noop}
         onRemove={noop}
         onUpdate={noop}
-        onShuffle={onShuffle}
-        onSort={noop}
+        onReorder={onReorder}
       />
     );
-    await user.click(screen.getByRole("button", { name: /shuffle/i }));
-    expect(onShuffle).toHaveBeenCalledOnce();
-  });
 
-  it("calls onSort when Sort is clicked", async () => {
-    const user = userEvent.setup();
-    const onSort = vi.fn();
-    render(
-      <OptionList
-        options={defaultOptions}
-        onAdd={noop}
-        onRemove={noop}
-        onUpdate={noop}
-        onShuffle={noop}
-        onSort={onSort}
-      />
-    );
-    await user.click(screen.getByRole("button", { name: /sort/i }));
-    expect(onSort).toHaveBeenCalledOnce();
+    const draggedItem = screen.getByText("Alpha").closest("li");
+    const targetItem = screen.getByText("Gamma").closest("li");
+    expect(draggedItem).not.toBeNull();
+    expect(targetItem).not.toBeNull();
+
+    fireEvent.dragStart(draggedItem!);
+    fireEvent.dragOver(targetItem!);
+    fireEvent.drop(targetItem!);
+
+    expect(onReorder).toHaveBeenCalledWith("1", "3");
   });
 
   it("does not allow removing when only 2 options exist", () => {
@@ -128,10 +128,24 @@ describe("OptionList", () => {
         onAdd={noop}
         onRemove={noop}
         onUpdate={noop}
-        onShuffle={noop}
-        onSort={noop}
+        onReorder={noop}
       />
     );
     expect(screen.queryByRole("button", { name: /remove/i })).not.toBeInTheDocument();
+  });
+
+  it("does not render shuffle or sort buttons", () => {
+    render(
+      <OptionList
+        options={defaultOptions}
+        onAdd={noop}
+        onRemove={noop}
+        onUpdate={noop}
+        onReorder={noop}
+      />
+    );
+
+    expect(screen.queryByRole("button", { name: /shuffle/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /sort/i })).not.toBeInTheDocument();
   });
 });

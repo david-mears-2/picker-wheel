@@ -7,8 +7,7 @@ interface OptionListProps {
   onAdd: (label: string) => void;
   onRemove: (id: string) => void;
   onUpdate: (id: string, updates: Partial<Pick<WheelOption, "label" | "color" | "weight">>) => void;
-  onShuffle: () => void;
-  onSort: () => void;
+  onReorder: (draggedId: string, targetId: string) => void;
 }
 
 export function OptionList({
@@ -16,10 +15,10 @@ export function OptionList({
   onAdd,
   onRemove,
   onUpdate,
-  onShuffle,
-  onSort,
+  onReorder,
 }: OptionListProps) {
   const [newLabel, setNewLabel] = useState("");
+  const [draggedOptionId, setDraggedOptionId] = useState<string | null>(null);
 
   const handleAdd = () => {
     const trimmed = newLabel.trim();
@@ -32,6 +31,17 @@ export function OptionList({
   return (
     <section className="options-panel" aria-label="Wheel options">
       <h2>Options</h2>
+      {options.length > 1 && (
+        <p
+          style={{
+            margin: "-6px 0 12px",
+            color: "var(--text-muted)",
+            fontSize: "0.85rem",
+          }}
+        >
+          ↕ Drag and drop to reorder
+        </p>
+      )}
 
       <div className="add-option-form">
         <input
@@ -58,18 +68,27 @@ export function OptionList({
             onUpdate={onUpdate}
             onRemove={onRemove}
             canRemove={options.length > 2}
+            draggable={options.length > 1}
+            isDragging={draggedOptionId === opt.id}
+            onDragStart={() => {
+              setDraggedOptionId(opt.id);
+            }}
+            onDragEnd={() => {
+              setDraggedOptionId(null);
+            }}
+            onDragOver={(event) => {
+              event.preventDefault();
+            }}
+            onDrop={(event) => {
+              event.preventDefault();
+              if (draggedOptionId && draggedOptionId !== opt.id) {
+                onReorder(draggedOptionId, opt.id);
+              }
+              setDraggedOptionId(null);
+            }}
           />
         ))}
       </ul>
-
-      <div className="option-list-controls">
-        <button onClick={onShuffle} className="btn btn-ghost btn-sm">
-          Shuffle
-        </button>
-        <button onClick={onSort} className="btn btn-ghost btn-sm">
-          Sort
-        </button>
-      </div>
     </section>
   );
 }

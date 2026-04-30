@@ -123,36 +123,22 @@ describe("useWheelState", () => {
     expect(newColors).not.toEqual(oldColors);
   });
 
-  it("shuffleOptions changes option order", () => {
+  it("reorderOptions moves a dragged option to the drop target position", () => {
     const { result } = renderHook(() => useWheelState());
-    // Add enough options to make shuffle reliably change order
-    act(() => {
-      for (let i = 0; i < 10; i++) result.current.addOption(`Extra ${i}`);
-    });
-    const originalOrder = result.current.state.options.map(o => o.id);
-    // Try multiple shuffles to account for random chance of same order
-    let changed = false;
-    for (let attempt = 0; attempt < 5; attempt++) {
-      act(() => result.current.shuffleOptions());
-      const newOrder = result.current.state.options.map(o => o.id);
-      if (JSON.stringify(newOrder) !== JSON.stringify(originalOrder)) {
-        changed = true;
-        break;
-      }
-    }
-    expect(changed).toBe(true);
-  });
 
-  it("sortOptions sorts alphabetically", () => {
-    const { result } = renderHook(() => useWheelState());
     act(() => {
-      result.current.addOption("Zebra");
-      result.current.addOption("Apple");
+      result.current.reorderOptions("opt-1777556974558-1", "opt-1777557189326-4");
     });
-    act(() => result.current.sortOptions());
-    const labels = result.current.state.options.map(o => o.label);
-    const sorted = [...labels].sort((a, b) => a.localeCompare(b));
-    expect(labels).toEqual(sorted);
+
+    expect(result.current.state.options.map(o => o.id)).toEqual([
+      "opt-1777557300285-7",
+      "opt-1777556974558-1",
+      "opt-1777557189326-4",
+      "opt-1777557006067-2",
+      "opt-1777557256942-6",
+      "opt-1777557174806-3",
+      "opt-1777557239024-5",
+    ]);
   });
 
   it("loads persisted settings from localStorage", () => {

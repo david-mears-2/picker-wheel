@@ -6,9 +6,26 @@ interface OptionItemProps {
   onUpdate: (id: string, updates: Partial<Pick<WheelOption, "label" | "color" | "weight">>) => void;
   onRemove: (id: string) => void;
   canRemove: boolean;
+  draggable?: boolean;
+  isDragging?: boolean;
+  onDragStart?: () => void;
+  onDragEnd?: () => void;
+  onDragOver?: (event: React.DragEvent<HTMLLIElement>) => void;
+  onDrop?: (event: React.DragEvent<HTMLLIElement>) => void;
 }
 
-export function OptionItem({ option, onUpdate, onRemove, canRemove }: OptionItemProps) {
+export function OptionItem({
+  option,
+  onUpdate,
+  onRemove,
+  canRemove,
+  draggable = false,
+  isDragging = false,
+  onDragStart,
+  onDragEnd,
+  onDragOver,
+  onDrop,
+}: OptionItemProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editLabel, setEditLabel] = useState(option.label);
 
@@ -23,7 +40,18 @@ export function OptionItem({ option, onUpdate, onRemove, canRemove }: OptionItem
   const clampWeight = (v: number) => Math.round(Math.max(0.1, Math.min(10, v)) * 10) / 10;
 
   return (
-    <li className="option-item">
+    <li
+      className="option-item"
+      draggable={draggable}
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      style={{
+        opacity: isDragging ? 0.55 : 1,
+        cursor: draggable ? "grab" : "default",
+      }}
+    >
       <input
         type="color"
         value={option.color}
