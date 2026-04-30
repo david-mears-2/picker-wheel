@@ -12,3 +12,8 @@ export interface WheelSettings {
   bgColor: string;
   colorPatternIndex: number;
 }
+
+export interface SpinOutcomeOverrideConfig {
+  enabled: boolean;
+  optionIndex: number;
+}

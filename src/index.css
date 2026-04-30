@@ -357,6 +357,22 @@ body {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
+.result-error {
+  margin-top: 16px;
+  display: inline-block;
+  max-width: min(100%, 36rem);
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: 1px solid #fecdd3;
+  background: #fff1f2;
+  color: #9f1239;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  animation: result-appear 0.3s ease-out;
+}
+
 @keyframes result-appear {
   from {
     opacity: 0;
@@ -413,6 +429,17 @@ body {
   padding: 24px 48px;
   backdrop-filter: blur(6px);
   animation: result-appear 0.4s ease-out;
+}
+
+.app:fullscreen .result-error,
+.app--fullscreen .result-error {
+  margin: 0;
+  padding: 24px 28px;
+  border: 1px solid rgba(254, 205, 211, 0.65);
+  background: rgba(127, 29, 29, 0.88);
+  color: #fff1f2;
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
 }
 
 .app:fullscreen .result-display-label,

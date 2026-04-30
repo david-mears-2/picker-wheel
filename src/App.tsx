@@ -62,7 +62,7 @@ export default function App() {
     tick();
   }, [tick]);
 
-  const { isSpinning, rotation, spin } = useSpinAnimation(
+  const { isSpinning, rotation, spin, error: spinError } = useSpinAnimation(
     state.options,
     handleFinished,
     handleSegmentChange
@@ -132,13 +132,17 @@ export default function App() {
             />
           </div>
           <div className="result-slot">
-            {winner && !isSpinning && (
+            {spinError && !isSpinning ? (
+              <div className="result-error" role="alert" aria-live="assertive">
+                {spinError}
+              </div>
+            ) : winner && !isSpinning ? (
               <ResultDisplay
                 label={winner.label}
                 color={winner.color}
                 onDismiss={() => setWinner(null)}
               />
-            )}
+            ) : null}
           </div>
         </div>
 

@@ -1,11 +1,14 @@
 import { useState, useRef, useCallback } from "react";
 import type { WheelOption } from "../types";
-import { buildSegments, pickWinner, getSegmentAtPointer } from "../lib/wheelMath";
+import { getSpinOutcomeConfig } from "../config/spinOutcome";
+import { resolveSpinOutcome } from "../lib/spinOutcome";
+import { buildSegments, getSegmentAtPointer } from "../lib/wheelMath";
 
 interface SpinState {
   isSpinning: boolean;
-  rotation: number;       // current rotation in radians
+  rotation: number; // current rotation in radians
   currentSegment: number; // index of segment under pointer
+  error: string | null;
 }
 
 export function useSpinAnimation(
@@ -17,6 +20,7 @@ export function useSpinAnimation(
     isSpinning: false,
     rotation: 0,
     currentSegment: 0,
+    error: null,
   });
 
   const animRef = useRef<number>(0);
@@ -27,7 +31,27 @@ export function useSpinAnimation(
     if (options.length < 2) return;
 
     const segments = buildSegments(options);
-    const { angle: winAngle, winnerIndex } = pickWinner(segments);
+    const { config, error: configError } = getSpinOutcomeConfig();
+    if (configError) {
+      setSpinState((s) => ({
+        ...s,
+        isSpinning: false,
+        error: configError,
+      }));
+      return;
+    }
+
+    const outcome = resolveSpinOutcome(segments, config);
+    if (outcome.error) {
+      setSpinState((s) => ({
+        ...s,
+        isSpinning: false,
+        error: outcome.error,
+      }));
+      return;
+    }
+
+    const { angle: winAngle, winnerIndex } = outcome.selection;
 
     // The pointer is on the right (0° in canvas = 3 o'clock).
     // Segments are drawn offset by -π/2 (segment 0 starts at top).
@@ -46,7 +70,7 @@ export function useSpinAnimation(
     const duration = 4000 + Math.random() * 2000; // 4–6 seconds
     const startTime = performance.now();
 
-    setSpinState((s) => ({ ...s, isSpinning: true }));
+    setSpinState((s) => ({ ...s, isSpinning: true, error: null }));
 
     const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
 
@@ -69,6 +93,7 @@ export function useSpinAnimation(
         isSpinning: progress < 1,
         rotation: currentRotation,
         currentSegment: currentSeg,
+        error: null,
       });
 
       if (progress < 1) {
