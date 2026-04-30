@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import type { WheelOption, WheelSettings } from "../types";
 import { loadSettings, saveSettings } from "../lib/storage";
-import { getOptionColor } from "../lib/colors";
+import { getOptionColor, getRandomOptionColor } from "../lib/colors";
 
 let nextId = 1;
 function uid(): string {
@@ -79,7 +79,7 @@ export function useWheelState() {
       const newOpt: WheelOption = {
         id: uid(),
         label,
-        color: getOptionColor(s.colorPatternIndex, s.options.length),
+        color: getRandomOptionColor(s.options.map((option) => option.color)),
         weight: 1,
       };
       return { ...s, options: [...s.options, newOpt] };

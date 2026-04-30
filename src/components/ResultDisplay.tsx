@@ -1,3 +1,5 @@
+import { getReadableTextColor } from "../lib/colors";
+
 interface ResultDisplayProps {
   label: string;
   color: string;
@@ -5,6 +7,8 @@ interface ResultDisplayProps {
 }
 
 export function ResultDisplay({ label, color, onDismiss }: ResultDisplayProps) {
+  const textColor = getReadableTextColor(color);
+
   return (
     <div
       className="result-display"
@@ -15,7 +19,7 @@ export function ResultDisplay({ label, color, onDismiss }: ResultDisplayProps) {
     >
       <div
         className="result-display-label"
-        style={{ backgroundColor: color }}
+        style={{ backgroundColor: color, color: textColor }}
       >
         {label}
       </div>

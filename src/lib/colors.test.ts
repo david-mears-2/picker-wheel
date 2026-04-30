@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { COLOR_PATTERNS, getOptionColor } from "./colors";
+import {
+  COLOR_PATTERNS,
+  getContrastRatio,
+  getOptionColor,
+  getRandomOptionColor,
+  getReadableTextColor,
+} from "./colors";
 
 describe("COLOR_PATTERNS", () => {
   it("contains at least one pattern", () => {
@@ -44,5 +50,38 @@ describe("getOptionColor", () => {
         expect(getOptionColor(p, i)).toBe(COLOR_PATTERNS[p][i]);
       }
     }
+  });
+});
+
+describe("getReadableTextColor", () => {
+  it("returns dark text for light backgrounds", () => {
+    expect(getReadableTextColor("#fefae0")).toBe("#111111");
+  });
+
+  it("returns light text for dark backgrounds", () => {
+    expect(getReadableTextColor("#264653")).toBe("#ffffff");
+  });
+});
+
+describe("getRandomOptionColor", () => {
+  it("returns a color with sufficient contrast against its chosen text color", () => {
+    const color = getRandomOptionColor(["#e76f51", "#2a9d8f"], () => 0.25);
+    const textColor = getReadableTextColor(color);
+
+    expect(getContrastRatio(color, textColor)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it("prefers colors that do not duplicate existing colors", () => {
+    const repeatedValues = [0, 0.7, 0.4, 0.4, 0.7, 0.4];
+    let index = 0;
+    const random = () => {
+      const value = repeatedValues[index % repeatedValues.length];
+      index += 1;
+      return value;
+    };
+
+    const color = getRandomOptionColor(["#d74242"], random);
+
+    expect(color).not.toBe("#d74242");
   });
 });

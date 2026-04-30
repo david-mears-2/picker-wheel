@@ -20,6 +20,11 @@ describe("ResultDisplay", () => {
     expect(label).toHaveStyle({ backgroundColor: "#e76f51" });
   });
 
+  it("uses a readable text color for light backgrounds", () => {
+    render(<ResultDisplay label="Pizza" color="#fefae0" onDismiss={() => {}} />);
+    expect(screen.getByText("Pizza")).toHaveStyle({ color: "#111111" });
+  });
+
   it("calls onDismiss when clicked", async () => {
     const user = userEvent.setup();
     const onDismiss = vi.fn();

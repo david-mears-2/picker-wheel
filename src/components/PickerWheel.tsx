@@ -1,5 +1,6 @@
 import { useRef, useEffect, useCallback } from "react";
 import type { WheelOption } from "../types";
+import { getReadableTextColor } from "../lib/colors";
 import { buildSegments, type Segment } from "../lib/wheelMath";
 
 interface PickerWheelProps {
@@ -40,8 +41,11 @@ function drawWheel(
     ctx.rotate(labelAngle);
     ctx.textAlign = "right";
     ctx.textBaseline = "middle";
-    ctx.fillStyle = "#fff";
-    ctx.shadowColor = "rgba(0,0,0,0.5)";
+    const labelColor = getReadableTextColor(seg.option.color);
+    ctx.fillStyle = labelColor;
+    ctx.shadowColor = labelColor === "#111111"
+      ? "rgba(255,255,255,0.45)"
+      : "rgba(0,0,0,0.5)";
     ctx.shadowBlur = 2;
 
     const maxFontSize = Math.max(16, radius * 0.05);
