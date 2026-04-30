@@ -139,10 +139,16 @@ body {
   width: 28px;
   height: 30px;
   z-index: 10;
-  transform: translate3d(0, -50%, 0) rotate(0deg);
-  transform-origin: calc(100% - 2px) 50%;
-  will-change: transform;
+  transform: translate3d(0, -50%, 0);
   pointer-events: none;
+}
+
+.wheel-pointer-motion {
+  width: 100%;
+  height: 100%;
+  transform: rotate(0deg);
+  transform-origin: 66.67% 50%;
+  will-change: transform;
 }
 
 .wheel-pointer {

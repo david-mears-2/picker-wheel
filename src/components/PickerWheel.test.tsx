@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeAll, beforeEach, afterEach } from "vitest";
-import { act, render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import { PickerWheel } from "./PickerWheel";
 import type { WheelOption } from "../types";
 
@@ -37,6 +37,7 @@ beforeAll(() => {
 beforeEach(() => {
   animationFrameId = 0;
   animationFrames = new Map();
+  vi.useFakeTimers();
   vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback: FrameRequestCallback) => {
     animationFrameId += 1;
     animationFrames.set(animationFrameId, callback);
@@ -49,6 +50,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks();
+  vi.useRealTimers();
 });
 
 function runNextAnimationFrame(timestamp = 16) {
@@ -105,67 +107,67 @@ describe("PickerWheel", () => {
     expect(screen.getByRole("img")).toHaveAttribute("aria-label", "Picker wheel with 3 options");
   });
 
-  it("deflects the pointer on impact and springs back on the next frame", async () => {
+  it("deflects the pointer on impact and springs back on the next frame", () => {
     const { container, rerender } = render(<PickerWheel options={options} rotation={0} />);
-    const pointerAnchor = container.querySelector(".wheel-pointer-anchor") as HTMLDivElement;
+    const pointerMotion = container.querySelector(".wheel-pointer-motion") as HTMLDivElement;
 
-    rerender(
-      <PickerWheel
-        options={options}
-        pointerImpact={{ trigger: 1, angularVelocity: 0.028 }}
-        rotation={0}
-      />
-    );
-
-    await waitFor(() => {
-      expect(pointerAnchor.style.transform).toBe("translate3d(0, calc(-50% + 11px), 0) rotate(9deg)");
-      expect(pointerAnchor.style.transition).toBe("none");
+    act(() => {
+      rerender(
+        <PickerWheel
+          options={options}
+          pointerImpact={{ trigger: 1, angularVelocity: 0.028 }}
+          rotation={0}
+        />
+      );
     });
 
+    expect(pointerMotion.style.transform).toBe("rotate(-15deg)");
+    expect(pointerMotion.style.transition).toBe("none");
+
+    act(() => {
+      vi.advanceTimersByTime(36);
+    });
+    expect(animationFrames.size).toBe(1);
     runNextAnimationFrame();
 
-    await waitFor(() => {
-      expect(pointerAnchor.style.transform).toBe("translate3d(0, -50%, 0) rotate(0deg)");
-      expect(pointerAnchor.style.transition).toContain("transform 240ms");
-    });
+    expect(pointerMotion.style.transform).toBe("rotate(0deg)");
+    expect(pointerMotion.style.transition).toContain("transform 240ms");
   });
 
-  it("replaces an in-flight recovery when a new impact is triggered", async () => {
+  it("replaces an in-flight recovery when a new impact is triggered", () => {
     const { container, rerender } = render(<PickerWheel options={options} rotation={0} />);
-    const pointerAnchor = container.querySelector(".wheel-pointer-anchor") as HTMLDivElement;
+    const pointerMotion = container.querySelector(".wheel-pointer-motion") as HTMLDivElement;
 
-    rerender(
-      <PickerWheel
-        options={options}
-        pointerImpact={{ trigger: 1, angularVelocity: 0.004 }}
-        rotation={0}
-      />
-    );
-
-    await waitFor(() => {
-      expect(pointerAnchor.style.transform).toBe("translate3d(0, calc(-50% + 4px), 0) rotate(3deg)");
+    act(() => {
+      rerender(
+        <PickerWheel
+          options={options}
+          pointerImpact={{ trigger: 1, angularVelocity: 0.004 }}
+          rotation={0}
+        />
+      );
     });
 
-    expect(animationFrames.size).toBe(1);
+    expect(pointerMotion.style.transform).toBe("rotate(-5deg)");
 
-    rerender(
-      <PickerWheel
-        options={options}
-        pointerImpact={{ trigger: 2, angularVelocity: 0.028 }}
-        rotation={0}
-      />
-    );
-
-    await waitFor(() => {
-      expect(pointerAnchor.style.transform).toBe("translate3d(0, calc(-50% + 11px), 0) rotate(9deg)");
+    act(() => {
+      rerender(
+        <PickerWheel
+          options={options}
+          pointerImpact={{ trigger: 2, angularVelocity: 0.028 }}
+          rotation={0}
+        />
+      );
     });
 
-    expect(animationFrames.size).toBe(1);
+    expect(pointerMotion.style.transform).toBe("rotate(-15deg)");
 
+    act(() => {
+      vi.advanceTimersByTime(36);
+    });
+    expect(animationFrames.size).toBe(1);
     runNextAnimationFrame();
 
-    await waitFor(() => {
-      expect(pointerAnchor.style.transform).toBe("translate3d(0, -50%, 0) rotate(0deg)");
-    });
+    expect(pointerMotion.style.transform).toBe("rotate(0deg)");
   });
 });

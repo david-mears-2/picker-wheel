@@ -109,9 +109,10 @@ export function PickerWheel({ options, pointerImpact, rotation, size = 500 }: Pi
       <div
         className="wheel-pointer-anchor"
         aria-hidden="true"
-        ref={pointerRef}
       >
-        <div className="wheel-pointer" />
+        <div className="wheel-pointer-motion" ref={pointerRef}>
+          <div className="wheel-pointer" />
+        </div>
       </div>
       <canvas
         ref={canvasRef}
