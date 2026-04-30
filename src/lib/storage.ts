@@ -13,7 +13,8 @@ export function loadSettings(): WheelSettings | null {
       Array.isArray(parsed.options)
     ) {
       // Strip legacy fields (e.g. results) during migration
-      const { results: _, ...rest } = parsed;
+      const { results, ...rest } = parsed;
+      void results;
       return rest as WheelSettings;
     }
     return null;

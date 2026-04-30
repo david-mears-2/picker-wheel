@@ -11,6 +11,28 @@ interface PickerWheelProps {
   size?: number;
 }
 
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max);
+}
+
+function formatPoint(x: number, y: number): string {
+  return `${x.toFixed(3)},${y.toFixed(3)}`;
+}
+
+function getInnerPointerPoints(width: number, height: number, borderWidth = 1): string {
+  const slantedEdgeLength = Math.hypot(height, width * 2);
+  const leftX = borderWidth * slantedEdgeLength / height;
+  const rightX = width - borderWidth;
+  const topY = borderWidth * (slantedEdgeLength + height) / (2 * width);
+  const bottomY = height - topY;
+
+  return [
+    formatPoint(rightX, topY),
+    formatPoint(leftX, height / 2),
+    formatPoint(rightX, bottomY),
+  ].join(" ");
+}
+
 function drawWheel(
   ctx: CanvasRenderingContext2D,
   segments: Segment[],
@@ -103,15 +125,44 @@ export function PickerWheel({ options, pointerImpact, rotation, size = 500 }: Pi
   }, [redraw]);
 
   const rotationDeg = (rotation * 180) / Math.PI;
+  const pointerWidth = Math.round(clamp(size * 0.06, 28, 56));
+  const pointerHeight = Math.round(pointerWidth * (30 / 28));
+  const pointerOffset = Math.round(pointerWidth * (18 / 28));
+  const outerPointerPoints = [
+    formatPoint(pointerWidth, 0),
+    formatPoint(0, pointerHeight / 2),
+    formatPoint(pointerWidth, pointerHeight),
+  ].join(" ");
+  const innerPointerPoints = getInnerPointerPoints(pointerWidth, pointerHeight);
 
   return (
     <div className="wheel-container" style={{ width: size, height: size, position: "relative" }}>
       <div
         className="wheel-pointer-anchor"
         aria-hidden="true"
+        style={{
+          right: -pointerOffset,
+          width: pointerWidth,
+          height: pointerHeight,
+        }}
       >
         <div className="wheel-pointer-motion" ref={pointerRef}>
-          <div className="wheel-pointer" />
+          <svg
+            className="wheel-pointer"
+            viewBox={`0 0 ${pointerWidth} ${pointerHeight}`}
+            focusable="false"
+          >
+            <polygon
+              className="wheel-pointer-outline"
+              points={outerPointerPoints}
+              fill="#ffffff"
+            />
+            <polygon
+              className="wheel-pointer-fill"
+              points={innerPointerPoints}
+              fill="#333333"
+            />
+          </svg>
         </div>
       </div>
       <canvas

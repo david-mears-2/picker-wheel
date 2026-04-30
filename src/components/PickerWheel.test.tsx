@@ -99,6 +99,23 @@ describe("PickerWheel", () => {
     const { container } = render(<PickerWheel options={options} rotation={0} />);
     const pointer = container.querySelector(".wheel-pointer");
     expect(pointer).toBeInTheDocument();
+    const outline = container.querySelector(".wheel-pointer-outline");
+    const fill = container.querySelector(".wheel-pointer-fill");
+    expect(outline).toHaveAttribute("fill", "#ffffff");
+    expect(fill).toHaveAttribute("fill", "#333333");
+  });
+
+  it("scales the pointer with the wheel size", () => {
+    const { container, rerender } = render(<PickerWheel options={options} rotation={0} size={300} />);
+    const anchor = container.querySelector(".wheel-pointer-anchor") as HTMLDivElement;
+
+    expect(anchor.style.width).toBe("28px");
+    expect(anchor.style.height).toBe("30px");
+
+    rerender(<PickerWheel options={options} rotation={0} size={700} />);
+
+    expect(anchor.style.width).toBe("42px");
+    expect(anchor.style.height).toBe("45px");
   });
 
   it("updates aria label when options change", () => {

@@ -12,25 +12,38 @@ import type { WheelOption } from "./types";
 
 const WHEEL_SIZE = 500;
 
+function getFullscreenWheelSize(width: number, height: number): number {
+  const available = Math.min(width - 40, height - 220);
+  return Math.max(300, Math.floor(available));
+}
+
 function useWheelSize(isFullscreen: boolean): number {
-  const [size, setSize] = useState(WHEEL_SIZE);
+  const [viewportSize, setViewportSize] = useState(() => ({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  }));
 
   useEffect(() => {
-    if (!isFullscreen) {
-      setSize(WHEEL_SIZE);
-      return;
-    }
     const update = () => {
-      // Reserve space for header (~100px), result (~80px), and padding (~40px)
-      const available = Math.min(window.innerWidth - 40, window.innerHeight - 220);
-      setSize(Math.max(300, Math.floor(available)));
+      setViewportSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
     };
-    update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
-  }, [isFullscreen]);
 
-  return size;
+    window.addEventListener("resize", update);
+    document.addEventListener("fullscreenchange", update);
+    return () => {
+      window.removeEventListener("resize", update);
+      document.removeEventListener("fullscreenchange", update);
+    };
+  }, []);
+
+  if (!isFullscreen) {
+    return WHEEL_SIZE;
+  }
+
+  return getFullscreenWheelSize(viewportSize.width, viewportSize.height);
 }
 
 export default function App() {
