@@ -23,7 +23,7 @@ describe("App", () => {
     await user.click(screen.getByRole("button", { name: /spin/i }));
 
     expect(screen.getByRole("alert")).toHaveTextContent(
-      "Configured spin outcome index 10 is out of range for 4 options."
+      "Configured spin outcome index 10 is out of range for 7 options."
     );
   });
 });

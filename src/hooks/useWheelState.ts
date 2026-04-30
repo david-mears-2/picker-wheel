@@ -8,12 +8,56 @@ function uid(): string {
   return `opt-${Date.now()}-${nextId++}`;
 }
 
-const DEFAULT_OPTIONS: () => WheelOption[] = () => [
-  { id: uid(), label: "Option 1", color: "", weight: 1 },
-  { id: uid(), label: "Option 2", color: "", weight: 1 },
-  { id: uid(), label: "Option 3", color: "", weight: 1 },
-  { id: uid(), label: "Option 4", color: "", weight: 1 },
-];
+const DEFAULT_SETTINGS: WheelSettings = {
+  title: "Disease X",
+  subtitle: "A pandemic hits in 2036. Which pathogen is it similar to?",
+  options: [
+    {
+      id: "opt-1777557300285-7",
+      label: "Influenza 1918 (Spanish flu)",
+      color: "#e76f51",
+      weight: 2.2,
+    },
+    {
+      id: "opt-1777557189326-4",
+      label: "Covid-19 Delta",
+      color: "#f4a261",
+      weight: 0.7,
+    },
+    {
+      id: "opt-1777557006067-2",
+      label: "Covid-19 wild-type",
+      color: "#e9c46a",
+      weight: 1.3,
+    },
+    {
+      id: "opt-1777557256942-6",
+      label: "Influenza 1957",
+      color: "#2a9d8f",
+      weight: 1.8,
+    },
+    {
+      id: "opt-1777557174806-3",
+      label: "Covid-19 Omicron",
+      color: "#264653",
+      weight: 0.5,
+    },
+    {
+      id: "opt-1777557239024-5",
+      label: "Influenza 2009 (Swine flu)",
+      color: "#e63946",
+      weight: 3,
+    },
+    {
+      id: "opt-1777556974558-1",
+      label: "SARS 2004",
+      color: "#457b9d",
+      weight: 0.3,
+    },
+  ],
+  bgColor: "#000000",
+  colorPatternIndex: 0,
+};
 
 function applyPatternColors(
   options: WheelOption[],
@@ -35,13 +79,9 @@ function getInitialState(): WheelSettings {
     }
     return saved;
   }
-  const patternIndex = 0;
   return {
-    title: "Picker Wheel",
-    subtitle: "",
-    options: applyPatternColors(DEFAULT_OPTIONS(), patternIndex),
-    bgColor: "#f4f7f6",
-    colorPatternIndex: patternIndex,
+    ...DEFAULT_SETTINGS,
+    options: DEFAULT_SETTINGS.options.map((option) => ({ ...option })),
   };
 }
 
