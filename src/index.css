@@ -86,21 +86,20 @@ body {
 .wheel-header {
   --wheel-header-action-size: 36px;
   display: grid;
-  grid-template-columns: var(--wheel-header-action-size) minmax(0, 1fr) var(--wheel-header-action-size);
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: flex-start;
   gap: 12px;
   width: 100%;
 }
 
-.wheel-header > :first-child {
+.wheel-header > div {
   grid-column: 2;
   min-width: 0;
   text-align: center;
 }
 
+.controls-toggle-btn,
 .fullscreen-btn {
-  grid-column: 3;
-  justify-self: end;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 50%;
@@ -116,6 +115,15 @@ body {
   flex-shrink: 0;
 }
 
+.controls-toggle-btn {
+  justify-self: start;
+}
+
+.fullscreen-btn {
+  justify-self: end;
+}
+
+.controls-toggle-btn:hover,
 .fullscreen-btn:hover {
   background: var(--bg);
   color: var(--text);

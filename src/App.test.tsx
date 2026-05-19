@@ -26,4 +26,18 @@ describe("App", () => {
       "Configured spin outcome index 10 is out of range for 7 options."
     );
   });
+
+  it("hides the controls by default and shows them when toggled", async () => {
+    const user = userEvent.setup();
+
+    render(<App />);
+
+    expect(screen.queryByRole("region", { name: "Wheel options" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Settings" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /show controls/i }));
+
+    expect(screen.getByRole("region", { name: "Wheel options" })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "Settings" })).toBeInTheDocument();
+  });
 });

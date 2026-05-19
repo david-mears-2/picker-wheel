@@ -61,6 +61,7 @@ export default function App() {
 
   const [winner, setWinner] = useState<WheelOption | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [areControlsVisible, setAreControlsVisible] = useState(false);
   const [pointerImpact, setPointerImpact] = useState<PointerImpact>({
     trigger: 0,
     angularVelocity: 0,
@@ -126,6 +127,19 @@ export default function App() {
       <main className="app-layout">
         <div className="wheel-section">
           <div className="wheel-header">
+            {!isFullscreen && (
+              <button
+                className="controls-toggle-btn"
+                type="button"
+                onClick={() => setAreControlsVisible((current) => !current)}
+                aria-controls="app-controls"
+                aria-expanded={areControlsVisible}
+                aria-label={areControlsVisible ? "Hide controls" : "Show controls"}
+                title={areControlsVisible ? "Hide controls" : "Show controls"}
+              >
+                {areControlsVisible ? "✕" : "☰"}
+              </button>
+            )}
             <div>
               <h1 className="app-title">{state.title}</h1>
               {state.subtitle && (
@@ -169,8 +183,8 @@ export default function App() {
           </div>
         </div>
 
-        {!isFullscreen && (
-          <aside className="controls-section">
+        {!isFullscreen && areControlsVisible && (
+          <aside className="controls-section" id="app-controls">
             <OptionList
               options={state.options}
               onAdd={addOption}

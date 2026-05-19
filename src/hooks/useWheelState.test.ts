@@ -15,6 +15,12 @@ describe("useWheelState", () => {
     );
     expect(result.current.state.options).toEqual([
       {
+        id: "opt-1777557256942-6",
+        label: "Influenza 1957",
+        color: "#2a9d8f",
+        weight: 1.0,
+      },
+      {
         id: "opt-1777557300285-7",
         label: "Influenza 1918 (Spanish flu)",
         color: "#e76f51",
@@ -30,12 +36,6 @@ describe("useWheelState", () => {
         id: "opt-1777557006067-2",
         label: "Covid-19 wild-type",
         color: "#e9c46a",
-        weight: 1.0,
-      },
-      {
-        id: "opt-1777557256942-6",
-        label: "Influenza 1957",
-        color: "#2a9d8f",
         weight: 1.0,
       },
       {
